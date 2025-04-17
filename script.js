@@ -1,3 +1,6 @@
+// Pomodoro Timer - A simple timer application for productivity
+// Created by psycho-code138
+
 class PomodoroTimer {
     constructor() {
         this.timeLeft = 25 * 60; // 25 minutes in seconds
