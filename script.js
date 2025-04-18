@@ -24,36 +24,67 @@ class PomodoroTimer {
         this.pomodoroButton = document.getElementById('pomodoro');
         this.shortBreakButton = document.getElementById('shortBreak');
         this.longBreakButton = document.getElementById('longBreak');
+        this.modal = document.getElementById('focusModal');
+        this.focusInput = document.getElementById('focusInput');
+        this.confirmFocusButton = document.getElementById('confirmFocus');
+        this.cancelFocusButton = document.getElementById('cancelFocus');
 
         // Event listeners
-        this.startButton.addEventListener('click', () => this.start());
+        this.startButton.addEventListener('click', () => this.showFocusModal());
         this.pauseButton.addEventListener('click', () => this.pause());
         this.resetButton.addEventListener('click', () => this.reset());
         this.pomodoroButton.addEventListener('click', () => this.setMode('pomodoro'));
         this.shortBreakButton.addEventListener('click', () => this.setMode('shortBreak'));
         this.longBreakButton.addEventListener('click', () => this.setMode('longBreak'));
+        this.confirmFocusButton.addEventListener('click', () => this.handleFocusConfirm());
+        this.cancelFocusButton.addEventListener('click', () => this.hideFocusModal());
+        this.focusInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleFocusConfirm();
+            }
+        });
     }
 
     updateDisplay() {
         const minutes = Math.floor(this.timeLeft / 60);
         const seconds = this.timeLeft % 60;
+        const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         this.minutesDisplay.textContent = minutes.toString().padStart(2, '0');
         this.secondsDisplay.textContent = seconds.toString().padStart(2, '0');
+        document.title = `${timeString} - Pomodoro Timer`;
     }
 
-    start() {
+    showFocusModal() {
         if (!this.isRunning) {
-            this.isRunning = true;
-            this.timerId = setInterval(() => {
-                this.timeLeft--;
-                this.updateDisplay();
-                
-                if (this.timeLeft === 0) {
-                    this.playAlarm();
-                    this.pause();
-                }
-            }, 1000);
+            this.modal.style.display = 'flex';
+            this.focusInput.value = '';
+            this.focusInput.focus();
         }
+    }
+
+    hideFocusModal() {
+        this.modal.style.display = 'none';
+    }
+
+    handleFocusConfirm() {
+        const focusTask = this.focusInput.value.trim();
+        if (focusTask) {
+            this.hideFocusModal();
+            this.startTimer();
+        }
+    }
+
+    startTimer() {
+        this.isRunning = true;
+        this.timerId = setInterval(() => {
+            this.timeLeft--;
+            this.updateDisplay();
+            
+            if (this.timeLeft === 0) {
+                this.playAlarm();
+                this.pause();
+            }
+        }, 1000);
     }
 
     pause() {
