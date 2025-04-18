@@ -1,5 +1,5 @@
 // Pomodoro Timer - A simple timer application for productivity
-// Created by psycho-code138
+// Created by psychodynamicpsychology
 
 class PomodoroTimer {
     constructor() {
